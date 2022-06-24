@@ -58,7 +58,11 @@ public class D2LUserRequest {
         ]
         
         // Add host to the url.
-        url.host = baseURL.host()
+        if #available(macOS 13.0, *) {
+            url.host = baseURL.host()
+        } else {
+            url.host = baseURL.host
+        }
         url.scheme = baseURL.scheme
     }
     
