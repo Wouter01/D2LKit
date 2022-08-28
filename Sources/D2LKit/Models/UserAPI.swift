@@ -84,16 +84,40 @@ public struct UserProfile: Codable {
 }
 
 public struct ClasslistUser: Codable, Identifiable, Hashable {
-    public let identifier: String,
-        profileIdentifier: String,
+    public typealias ID = String
+    public typealias ProfileID = String
+    
+    public let identifier: ID,
+        profileIdentifier: ProfileID,
         displayName: String,
         userName: String?,
         email: String?,
         firstName: String?,
         lastName: String?,
-        roleId: Int?,
+        roleId: Role?,
         lastAccessed: String?,
         isOnline: Bool
     
     public var id: String { identifier }
+    
+    public enum Role: Codable, Equatable, Hashable, RawRepresentable {
+        case admin, assistant, student
+        
+        public init?(rawValue: Int) {
+            switch rawValue {
+            case 109: self = .admin
+            case 117: self = .assistant
+            case 116: self = .assistant
+            default: self = .student
+            }
+        }
+        
+        public var rawValue: Int {
+            switch self {
+            case .admin: return 109
+            case .assistant: return 117
+            case .student: return 110 // Note: is not always 110
+            }
+        }
+    }
 }

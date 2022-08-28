@@ -10,6 +10,7 @@ import Foundation
 public enum Service: String {
     case lp = "/d2l/api/lp/1.37/"
     case le = "/d2l/api/le/1.50/"
+    case bas = "/d2l/api/bas/1.1/"
 }
 
 public class D2LUserRequest {

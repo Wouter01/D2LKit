@@ -5,7 +5,7 @@
 //  Created by Wouter Hennen on 18/01/2021.
 //
 
-import Foundation
+import SwiftUI
 
 public enum CourseType {
     case course, infosite, other
@@ -62,6 +62,7 @@ public struct OrgUnitTypeInfo: Codable, Identifiable, Hashable {
 }
 
 public struct Course: Hashable, Identifiable {
+    
     public static func == (lhs: Course, rhs: Course) -> Bool {
         lhs.info == rhs.info
     }
@@ -75,56 +76,29 @@ public struct Course: Hashable, Identifiable {
                users: Result<[ClasslistUser], APIError>?,
                parent: CourseParent?
     
-    public var id: Int {
+    public typealias ID = Int
+    public var id: ID {
         info.orgUnit.id
     }
     
+    public var image: Image?
+    
+    public var isPinned: Bool {
+        info.pinDate != nil
+    }
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(info)
     }
     
-    
-    public mutating func fetchGrades() async {
-        let tempGrades: Result<[Grade], APIError> = await APIRoutes.Grades.grades(courseId: id).get()
-        // Check if grades are correctly fetched.
-        guard case .success(var newGrades) = tempGrades else {
-            grades = tempGrades
-            return
+    public mutating func fetchImage() async {
+        if let url = info.orgUnit.imageUrl, var urlcomponents = URLComponents(url: url, resolvingAgainstBaseURL: true) {
+            D2LManager.shared.builder?.build(using: .none, for: &urlcomponents)
+            do {
+                let (data, response) = try await URLSession.shared.data(from: urlcomponents.url!)
+                self.image = Image(data: data)!
+            } catch {}
         }
-        
-        // Check if there are any categories in grades. If not, we're done.
-        guard newGrades.contains(where: { $0.gradeObjectType == .category }) else {
-            grades = tempGrades
-            return
-        }
-        
-        // Fetch the categories of the course.
-        let categoriesResult: APIData<[GradeObjectCategory]> = await APIRoutes.Grades.categories(courseId: id).get()
-        
-        // Check if the categories are correctly fetched.
-        guard case .success(let categories) = categoriesResult else {
-            if case .failure(let failure) = categoriesResult {
-                grades = .failure(failure)
-            }
-            return
-        }
-        
-        // Add the subgrades to the category grade and remove them from the root list.
-        categories.forEach { category in
-            let index = newGrades.firstIndex { $0.id == String(category.id) }!
-            let subGradeIds = category.grades.map { String($0.id) }
-            newGrades[index].subGrades = newGrades.filter { subGradeIds.contains($0.id) }
-            newGrades.removeAll { grade in
-                subGradeIds.contains(grade.id)
-            }
-        }
-        
-        grades = .success(newGrades)
-    }
-    
-    public mutating func fetchUsers() async {
-        users = await APIRoutes.Users.users(courseId: id).get()
     }
     
 }

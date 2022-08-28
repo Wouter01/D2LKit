@@ -15,3 +15,22 @@ public struct PagedResultSet<T: Codable>: Codable {
                    hasMoreItems: Bool
     }
 }
+
+
+
+public struct BlockResultSet<T: Codable>: Codable, Searchable {
+    
+    public var searchTerm: String = ""
+    public var next: URL?
+    public var objects: [T]
+    
+    public init(next: URL? = nil, objects: [T]) {
+        self.next = next
+        self.objects = objects
+    }
+    
+    enum CodingKeys: CodingKey {
+        case next
+        case objects
+    }
+}
