@@ -13,7 +13,7 @@ import Foundation
 public struct UserFeedResource: Codable {
     let type: String,
         metadata: MessageMetaData,
-        resource: Announcement
+        resource: News
     struct MessageMetaData: Codable {
         let identifier: String,
             title: String,

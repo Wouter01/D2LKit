@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum APIError: Error, Hashable, CustomDebugStringConvertible {
+public enum APIError: Error, Hashable, CustomDebugStringConvertible, LocalizedError {
     case fetchError(description: String)
     case decodeError
     case statusCodeError(statusCode: Int)
@@ -28,4 +28,10 @@ public enum APIError: Error, Hashable, CustomDebugStringConvertible {
             return "The Authentication URL Builder is absent."
         }
     }
+    
+    public var errorDescription: String? {
+        debugDescription
+        
+    }
+    
 }
