@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public enum CourseType {
+public enum CourseType: String {
     case course, infosite, other
 }
 
@@ -81,7 +81,7 @@ public struct Course: Hashable, Identifiable {
         info.orgUnit.id
     }
     
-    public var image: Image?
+    public var image: Data?
     
     public var isPinned: Bool {
         info.pinDate != nil
@@ -89,16 +89,6 @@ public struct Course: Hashable, Identifiable {
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(info)
-    }
-    
-    public mutating func fetchImage() async {
-        if let url = info.orgUnit.imageUrl, var urlcomponents = URLComponents(url: url, resolvingAgainstBaseURL: true) {
-            D2LManager.shared.builder?.build(using: .none, for: &urlcomponents)
-            do {
-                let (data, response) = try await URLSession.shared.data(from: urlcomponents.url!)
-                self.image = Image(data: data)!
-            } catch {}
-        }
     }
     
 }

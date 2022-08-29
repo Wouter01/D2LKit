@@ -13,7 +13,7 @@ import UIKit
 import AppKit
 #endif
 
-extension Image {
+public extension Image {
     /// Initializes a SwiftUI `Image` from data.
     init?(data: Data) {
 #if canImport(UIKit)
