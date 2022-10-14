@@ -9,7 +9,7 @@ import Foundation
 
 extension APIRoutes {
     
-    public enum News: APIRoute {
+    public enum NewsRoute: APIRoute {
         public var platform: Service { .le }
         
         case courseNews(id: Course.ID)
@@ -19,6 +19,10 @@ extension APIRoutes {
             case .courseNews(let id):
                 return .init(path: "\(id)/news/")
             }
+        }
+
+        public static func getCourseNews(for course: Course.ID) async throws -> [News] {
+            try await courseNews(id: course).fetch()
         }
     }
     

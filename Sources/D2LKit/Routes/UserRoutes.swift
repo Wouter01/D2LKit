@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppKit
 
 typealias Users = APIRoutes.Users
 
@@ -20,6 +21,7 @@ extension APIRoutes {
         public var platform: Service { .le }
         
         public var url: URLComponents {
+
             switch self {
             case .users(let courseId):
                 return .init(path: "\(courseId)/classlist/")
@@ -37,6 +39,14 @@ extension APIRoutes {
                 return .init(path: "\(courseId)/classlist/paged/", queryItems: queryItems)
             }
         }
+
+        public static func getUsers(for course: Course.ID) async throws -> BlockResultSet<ClasslistUser> {
+            try await users(courseId: course).fetch()
+        }
+
+        public static func getPagedUsers(for course: Course.ID, searchTerm: String? = nil, next: URL? = nil) async throws -> BlockResultSet<ClasslistUser> {
+            try await pagedUsers(courseId: course).fetch()
+        }
     }
     
     public enum Profiles: APIRoute {
@@ -50,6 +60,14 @@ extension APIRoutes {
             case .profileImage(let profileId):
                 return .init(path: "profile/\(profileId)/image")
             }
+        }
+
+        public static func getProfileImage(for profile: ClasslistUser.ProfileID) async throws -> NSImage {
+            let data: Data = try await profileImage(profileId: profile).fetchRaw()
+            if let image = NSImage(data: data) {
+                return image
+            }
+            throw APIError.fetchError(description: "Could not decode image.")
         }
     }
 }

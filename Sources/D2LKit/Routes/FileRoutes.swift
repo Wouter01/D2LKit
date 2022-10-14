@@ -13,9 +13,7 @@ public extension APIRoutes {
         public var platform: Service { .le }
         
         case toc(Course.ID)
-        
         case file(Course.ID, Topic.ID)
-        
         case lti(Course.ID, Topic.ID)
                 
         public var url: URLComponents {
@@ -27,6 +25,14 @@ public extension APIRoutes {
             case .lti(let courseID, let ltiURL):
                 return .init(path: "lti/link/\(courseID)/\(ltiURL)")
             }
+        }
+
+        public static func getToc(for course: Course.ID) async throws -> [String: [Module]] {
+            try await toc(course).fetch()
+        }
+
+        public static func downloadFile(with id: Topic.ID, in course: Course.ID, to url: URL, delegate: DownloadProgressDelegate? = nil) async throws {
+            try await file(course, id).download(to: url, delegate: delegate)
         }
     }
 }
