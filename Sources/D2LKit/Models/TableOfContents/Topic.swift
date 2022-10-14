@@ -38,6 +38,14 @@ public struct Topic: Codable, Identifiable, Hashable {
     
     public var fileSize: String?
     
+    public var `extension`: String {
+        url.pathExtension
+    }
+    
+    public var urlTitle: String {
+        url.lastPathComponent
+    }
+    
     enum CodingKeys: String, CodingKey {
         case topicId
         case identifier
@@ -65,6 +73,4 @@ public struct Topic: Codable, Identifiable, Hashable {
     public var url: URL {
         URL(string: stringURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!
     }
-    
-    
 }

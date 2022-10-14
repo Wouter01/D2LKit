@@ -28,12 +28,6 @@ public class D2LUserRequest {
         self.baseURL = baseURL
     }
     
-    public enum HTTPMethod: String {
-        case get = "GET"
-        case post = "POST"
-    }
-    
-    
     /// Build an authenticated URL, which can be used to make requests to a Brightspace server.
     /// - Parameters:
     ///   - method: HTTP method to send to the server. Default is GET.

@@ -23,7 +23,7 @@ public extension APIRoutes {
             case .toc(let courseID):
                 return .init(path: "\(courseID)/content/toc")
             case .file(let courseID, let topicID):
-                return .init(path: "\(courseID)/content/topics/\(topicID)/file")
+                return .init(path: "\(courseID)/content/topics/\(topicID)/file", queryItems: [.init(name: "stream", value: "true")])
             case .lti(let courseID, let ltiURL):
                 return .init(path: "lti/link/\(courseID)/\(ltiURL)")
             }

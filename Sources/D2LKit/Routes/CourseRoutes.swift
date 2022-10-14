@@ -28,11 +28,27 @@ extension APIRoutes {
                     .init(name: "sortBy", value: "-PinDate"),
                     .init(name: "orgUnitTypeId", value: "3")
                 ])
+            case .pin(let id):
+                return .init(path: "enrollments/myenrollments/\(id)/pin")
+            case .unpin(let id):
+                return .init(path: "enrollments/myenrollments/\(id)/pin")
+            }
+        }
+        public var httpMethod: HTTPMethod {
+            switch self {
+            case .pin(_):
+                return .post
+            case .unpin(_):
+                return .delete
+            default:
+                return .get
             }
         }
         
         case courses
-        case courseSemesterInfo(courseIds: [Int])
+        case courseSemesterInfo(courseIds: [Course.ID])
+        case pin(courseID: Course.ID)
+        case unpin(courseID: Course.ID)
     }
     
 }
