@@ -13,7 +13,6 @@ public struct Module: Codable, Identifiable, Hashable {
                sortOrder: Int,
                startDateTime: String?,
                endDateTime: String?,
-               modules: [Module],
                topics: [Topic],
                isHidden: Bool,
                isLocked: Bool,
@@ -21,6 +20,10 @@ public struct Module: Codable, Identifiable, Hashable {
                pacingEndDate: String?,
                defaultPath: String,
                lastModifiedDate: String?
-    
+
+    public var modules: [Module]
+
     public var id: Int { moduleId }
+
+    public var extraInfo: ContentObject?
 }

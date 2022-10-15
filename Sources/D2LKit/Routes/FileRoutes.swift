@@ -13,6 +13,7 @@ public extension APIRoutes {
         public var platform: Service { .le }
         
         case toc(Course.ID)
+        case module(Course.ID, Topic.ID)
         case file(Course.ID, Topic.ID)
         case lti(Course.ID, Topic.ID)
                 
@@ -20,6 +21,8 @@ public extension APIRoutes {
             switch self {
             case .toc(let courseID):
                 return .init(path: "\(courseID)/content/toc")
+            case .module(let courseID, let topicID):
+                return .init(path: "\(courseID)/content/modules/\(topicID)")
             case .file(let courseID, let topicID):
                 return .init(path: "\(courseID)/content/topics/\(topicID)/file", queryItems: [.init(name: "stream", value: "true")])
             case .lti(let courseID, let ltiURL):
@@ -33,6 +36,10 @@ public extension APIRoutes {
 
         public static func downloadFile(with id: Topic.ID, in course: Course.ID, to url: URL, delegate: DownloadProgressDelegate? = nil) async throws {
             try await file(course, id).download(to: url, delegate: delegate)
+        }
+
+        public static func getModule(in course: Course.ID, with id: Topic.ID) async throws -> ContentObject {
+            try await module(course, id).fetch()
         }
     }
 }

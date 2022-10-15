@@ -54,7 +54,7 @@ public extension APIRoute {
             if let code = (resp as? HTTPURLResponse)?.statusCode, code != 200 {
                 throw APIError.statusCodeError(statusCode: code)
             }
-            
+
             if let result = A.init(jsonData: data) {
                 return result
             }
@@ -72,12 +72,13 @@ public extension APIRoute {
             request.httpMethod = httpMethod.rawValue
 
             let (data, resp) = try await URLSession.shared.data(for: request)
-            //            print(String(data: data, encoding: .utf8))
+
             if let code = (resp as? HTTPURLResponse)?.statusCode, code != 200 {
                 throw APIError.statusCodeError(statusCode: code)
             }
             return data
         } catch let error {
+            print(error)
             throw APIError.fetchError(description: error.localizedDescription)
         }
     }
