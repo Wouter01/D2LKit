@@ -98,7 +98,7 @@ public struct ClasslistUser: Codable, Identifiable, Hashable {
         lastAccessed: String?,
         isOnline: Bool
     
-    public var id: String { identifier }
+    public var id: ID { identifier }
     
     public enum Role: Codable, Equatable, Hashable, RawRepresentable {
         case admin, assistant, student

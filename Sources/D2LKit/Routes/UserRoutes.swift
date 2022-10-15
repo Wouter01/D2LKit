@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AppKit
+import SwiftUI
 
 typealias Users = APIRoutes.Users
 
@@ -15,7 +15,7 @@ extension APIRoutes {
     public enum Users: APIRoute {
         
         case users(courseId: Int)
-        
+
         case pagedUsers(courseId: Course.ID, searchTerm: String? = nil, next: URL? = nil)
         
         public var platform: Service { .le }
@@ -23,6 +23,7 @@ extension APIRoutes {
         public var url: URLComponents {
 
             switch self {
+
             case .users(let courseId):
                 return .init(path: "\(courseId)/classlist/")
             
@@ -40,7 +41,7 @@ extension APIRoutes {
             }
         }
 
-        public static func getUsers(for course: Course.ID) async throws -> BlockResultSet<ClasslistUser> {
+        public static func getUsers(for course: Course.ID) async throws -> [ClasslistUser] {
             try await users(courseId: course).fetch()
         }
 
@@ -51,7 +52,7 @@ extension APIRoutes {
     
     public enum Profiles: APIRoute {
         
-        case profileImage(profileId: String)
+        case profileImage(profileId: ClasslistUser.ID)
         
         public var platform: Service { .lp }
         
@@ -62,9 +63,9 @@ extension APIRoutes {
             }
         }
 
-        public static func getProfileImage(for profile: ClasslistUser.ProfileID) async throws -> NSImage {
+        public static func getProfileImage(for profile: ClasslistUser.ProfileID) async throws -> Image {
             let data: Data = try await profileImage(profileId: profile).fetchRaw()
-            if let image = NSImage(data: data) {
+            if let image = Image(data: data) {
                 return image
             }
             throw APIError.fetchError(description: "Could not decode image.")
